@@ -1,0 +1,102 @@
+services:
+
+  # PHP-fpm
+  app:
+    container_name: phpfpm
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/var/www/html/src
+      - ./config/php.ini:/usr/local/etc/php/php.ini
+    # Permissões e acesso para o Laravel
+    command: >
+      bash -c "
+        if [ -d /var/www/html/src/laravel/storage ]; then
+          chmod -R 775 /var/www/html/src/laravel/storage /var/www/html/src/laravel/storage/bootstrap/cache
+          chown -R www-data:www-data /var/www/html/src/laravel
+        fi
+        php-fpm
+      "
+    # # Permissões e acesso para o CodeIgniter
+    # command: >
+    #   bash -c "
+    #     if [ -d /var/www/html/src/codeigniter/writable ]; then
+    #       chmod -R 775 /var/www/html/src/codeigniter/writable
+    #       chown -R www-data:www-data /var/www/html/src/codeigniter
+    #     fi
+    #     php-fpm
+    #   "
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2GB
+    networks:
+      - app-network
+  
+  # nginx
+  web:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - 80:80
+    volumes:
+      - ./src:/var/www/html/src
+      - ./config/default.conf:/etc/nginx/conf.d/default.conf
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - app
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1GB
+    networks:
+      - app-network
+
+  # MariaDB
+  mariadb:
+    container_name: mariadb
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 'root-senha'
+      MYSQL_DATABASE: database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 'user-senha'
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ./config/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./database:/var/lib/mysql
+      - ./logs/mysql:/var/log/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1GB
+    networks:
+      - app-network
+
+  # Redis
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./dataredis:/data
+    command: redis-server --appendonly yes
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1GB
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
