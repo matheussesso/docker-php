@@ -1,6 +1,6 @@
 FROM php:8.4-fpm
 
-# Instalar Dependencias
+# Install Dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -15,11 +15,11 @@ RUN apt-get update && apt-get install -y \
     unzip \
     curl
 
-# Instalar e habilitar Redis no PHP
+# Install and enable Redis extension for PHP
 RUN pecl install redis \
     && docker-php-ext-enable redis
 
-# Instalar algumas extensões do PHP
+# Install some PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure intl \
     && docker-php-ext-install \
@@ -35,11 +35,11 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     soap \
     opcache
 
-# Instalar o Composer
+# Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Definir o Locale
+# Set Locale
 RUN locale-gen pt_BR.UTF-8
 
-# Limpar cache
+# Clean up
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*

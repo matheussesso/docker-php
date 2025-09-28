@@ -9,24 +9,7 @@ services:
     volumes:
       - ./src:/var/www/html/src
       - ./config/php.ini:/usr/local/etc/php/php.ini
-    # Permissões e acesso para o Laravel
-    command: >
-      bash -c "
-        if [ -d /var/www/html/src/laravel/storage ]; then
-          chmod -R 775 /var/www/html/src/laravel/storage /var/www/html/src/laravel/storage/bootstrap/cache
-          chown -R www-data:www-data /var/www/html/src/laravel
-        fi
-        php-fpm
-      "
-    # # Permissões e acesso para o CodeIgniter
-    # command: >
-    #   bash -c "
-    #     if [ -d /var/www/html/src/codeigniter/writable ]; then
-    #       chmod -R 775 /var/www/html/src/codeigniter/writable
-    #       chown -R www-data:www-data /var/www/html/src/codeigniter
-    #     fi
-    #     php-fpm
-    #   "
+      - ./logs/php:/var/log
     deploy:
       resources:
         limits:
@@ -60,10 +43,10 @@ services:
     container_name: mariadb
     image: mariadb:latest
     environment:
-      MYSQL_ROOT_PASSWORD: 'root-senha'
+      MYSQL_ROOT_PASSWORD: 'root-pass'
       MYSQL_DATABASE: database
       MYSQL_USER: user
-      MYSQL_PASSWORD: 'user-senha'
+      MYSQL_PASSWORD: 'user-pass'
     restart: always
     ports:
       - 3306:3306
