@@ -34,6 +34,26 @@ Access your application at `http://localhost`
 - **User:** `user` / `user-pass`
 - **Root:** `root` / `root-pass`
 
+## File Structure
+
+```
+docker-php/
+├── docker-compose.yml      # Docker services configuration
+├── Dockerfile             # PHP-FPM container build
+├── README.md              # This file
+├── config/
+│   ├── default.conf       # Nginx server configuration
+│   ├── my.cnf            # MariaDB configuration
+│   └── php.ini           # PHP configuration
+├── database/             # MariaDB data persistence
+├── dataredis/           # Redis data persistence
+├── logs/
+│   ├── mysql/           # MariaDB logs
+│   ├── nginx/           # Nginx logs
+│   └── php/             # PHP-FPM logs
+└── src/                 # Your PHP application code
+```
+
 ## Directory Structure
 
 - `src/` - Application code
