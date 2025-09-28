@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    libicu-dev \
     locales \
     libcurl4-openssl-dev \
     zip \
@@ -19,7 +20,10 @@ RUN pecl install redis \
     && docker-php-ext-enable redis
 
 # Instalar algumas extensões do PHP
-RUN docker-php-ext-install \
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install \
+    gd \
     mysqli \
     pdo_mysql \
     xml \
