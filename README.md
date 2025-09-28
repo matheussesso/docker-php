@@ -1,10 +1,65 @@
-# docker-php
-Docker Compose configurado para a stack: nginx, PHP, MySQL e Redis
+# Docker PHP Stack
 
-Esta previamente configurado para funcionar tanto com o Laravel quanto com o CodeIgniter.
+A lightweight Docker Compose setup for PHP development with Nginx, MariaDB (MySQL) and Redis.
 
-**Mais informações podem ser conferidas nesses vídeos:**
+## Stack Components
 
-Configurando o Docker Compose para o CodeIgniter: https://youtu.be/BhJOQnq6Hb8
+- **PHP 8.4-FPM** with essential extensions
+- **Nginx** web server  
+- **MariaDB** (MySQL compatible)
+- **Redis** for caching
 
-Configurando o Docker Compose para o Laravel: https://youtu.be/0-KJgDl-gZ0
+## Quick Start
+
+```bash
+git clone <repository-url>
+cd docker-php
+docker-compose up -d
+```
+
+Access your application at `http://localhost`
+
+## Services
+
+| Service | Container | Port | 
+|---------|-----------|------|
+| Nginx | `nginx` | 80 |
+| PHP-FPM | `phpfpm` | - |
+| MariaDB | `mariadb` | 3306 |
+| Redis | `redis` | 6379 |
+
+## Database Credentials
+
+- **Database:** `database`
+- **User:** `user` / `user-pass`
+- **Root:** `root` / `root-pass`
+
+## Directory Structure
+
+- `src/` - Application code
+- `config/` - Service configurations
+- `logs/` - Service logs
+- `database/` - MariaDB data
+- `dataredis/` - Redis data
+
+## PHP Extensions
+
+GD, MySQLi, PDO MySQL, XML, cURL, mbstring, ZIP, Intl, BCMath, SOAP, OPcache, Redis
+
+## Commands
+
+```bash
+# Start/stop services
+docker-compose up -d
+docker-compose down
+
+# View containers
+docker-compose ps
+
+# View logs
+docker-compose logs [service]
+
+# Access containers
+docker exec -it phpfpm bash
+docker exec -it mariadb mysql -u root -p
+```
